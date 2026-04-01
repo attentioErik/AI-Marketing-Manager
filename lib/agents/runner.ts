@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
+import OpenAI from 'openai'
 import { db, agents, tenants } from '../db/index'
 import { createRun, updateRun } from '../db/queries/runs'
 import { saveOutput } from '../db/queries/outputs'
@@ -7,6 +8,10 @@ import { eq, and } from 'drizzle-orm'
 import type { Agent, Tenant } from '../db/schema'
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+
+function getOpenAI() {
+  return new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
+}
 
 export interface RunResult {
   agentId:     string
@@ -44,7 +49,7 @@ export async function runAgent(agent: Agent, tenant: Tenant): Promise<RunResult>
 
     // Detect content type from visuell-kreator (JSON output)
     const contentType = agent.slug === 'visuell-kreator' ? detectContentType(rawContent) : 'markdown'
-    const assets      = contentType !== 'markdown' ? parseVisualAssets(rawContent) : undefined
+    const assets      = contentType !== 'markdown' ? await generateVisualAssets(rawContent, contentType) : undefined
 
     const output = await saveOutput({
       runId:       run.id,
@@ -159,8 +164,48 @@ function extractJson(content: string): string {
   return match?.[1] ?? content
 }
 
-function parseVisualAssets(content: string): object | undefined {
+interface SlideData {
+  title?:        string
+  caption?:      string
+  cta?:          string
+  image_prompt?: string
+  url?:          string
+}
+
+interface CarouselAssets {
+  slides: SlideData[]
+}
+
+async function generateVisualAssets(content: string, contentType: string): Promise<object | undefined> {
   try {
-    return JSON.parse(extractJson(content))
+    const parsed = JSON.parse(extractJson(content))
+
+    if (contentType === 'carousel' && parsed?.slides && process.env.OPENAI_API_KEY) {
+      const openai = getOpenAI()
+      const slides: SlideData[] = parsed.slides
+
+      const generated = await Promise.allSettled(
+        slides.map(async (slide: SlideData) => {
+          if (!slide.image_prompt) return slide
+          const response = await openai.images.generate({
+            model:   'dall-e-3',
+            prompt:  slide.image_prompt,
+            size:    '1024x1024',
+            quality: 'standard',
+            n:       1,
+          })
+          return { ...slide, url: response.data?.[0]?.url ?? undefined }
+        })
+      )
+
+      const assets: CarouselAssets = {
+        slides: generated.map((r, i) =>
+          r.status === 'fulfilled' ? r.value : slides[i]
+        ),
+      }
+      return assets
+    }
+
+    return parsed
   } catch { return undefined }
 }
