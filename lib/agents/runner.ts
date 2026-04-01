@@ -204,13 +204,16 @@ async function generateVisualAssets(content: string, contentType: string): Promi
         if (!slide.image_prompt) return slide
         try {
           const response = await openai.images.generate({
-            model:   'dall-e-3',
-            prompt:  slide.image_prompt,
-            size:    '1024x1024',
-            quality: 'standard',
-            n:       1,
+            model:           'dall-e-3',
+            prompt:          slide.image_prompt,
+            size:            '1024x1024',
+            quality:         'standard',
+            n:               1,
+            response_format: 'b64_json',
           })
-          return { ...slide, url: response.data?.[0]?.url ?? undefined }
+          const b64 = response.data?.[0]?.b64_json
+          const url = b64 ? `data:image/png;base64,${b64}` : undefined
+          return { ...slide, url }
         } catch (e) {
           console.error(`[visuell-kreator] DALL-E feil for slide:`, slide.image_prompt?.slice(0, 80), e)
           return slide
@@ -242,16 +245,17 @@ Wide landscape format, high quality, no text overlays.`
 
     const openai = getOpenAI()
     const response = await openai.images.generate({
-      model:   'dall-e-3',
+      model:           'dall-e-3',
       prompt,
-      size:    '1792x1024',
-      quality: 'standard',
-      n:       1,
+      size:            '1792x1024',
+      quality:         'standard',
+      n:               1,
+      response_format: 'b64_json',
     })
 
-    const url = response.data?.[0]?.url
-    if (!url) return undefined
-    return { blog_image_url: url, blog_image_alt: title }
+    const b64 = response.data?.[0]?.b64_json
+    if (!b64) return undefined
+    return { blog_image_url: `data:image/png;base64,${b64}`, blog_image_alt: title }
   } catch (e) {
     console.error('[innholdsskaper] Bloggbilde-generering feilet:', e)
     return undefined
