@@ -2,18 +2,28 @@
   background: var(--color-ui-surface);
   border: var(--border-1) solid var(--color-ui-border);
   border-radius: var(--radius-card-md);
-  padding: 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  transition: border-color 0.2s, background 0.2s;
-  text-decoration: none;
-  color: inherit;
+  transition: border-color 0.2s;
 }
 
 .card:hover {
   border-color: var(--color-ui-border-2);
-  background: var(--color-card-hover);
+}
+
+/* Clickable top section */
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem 1.25rem 1rem;
+  text-decoration: none;
+  color: inherit;
+  flex: 1;
+}
+
+.cardBody:hover .name {
+  color: var(--color-brand-purple-light);
 }
 
 .top {
@@ -28,12 +38,14 @@
   font-weight: 700;
   color: var(--color-ui-text);
   line-height: 1.2;
+  transition: color 0.15s;
 }
 
 .desc {
   font-size: var(--type-small);
   color: var(--color-ui-text-3);
   line-height: 1.4;
+  margin-top: 0.2rem;
 }
 
 .preview {
@@ -42,7 +54,7 @@
   line-height: 1.55;
   flex: 1;
   display: -webkit-box;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -53,13 +65,21 @@
   font-style: italic;
 }
 
+/* Footer with run button */
 .footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  padding-top: 0.5rem;
+  padding: 0.75rem 1.25rem;
   border-top: var(--border-1) solid var(--color-ui-border);
+  flex-wrap: wrap;
+}
+
+.footerRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .timestamp {
@@ -71,7 +91,9 @@
 .viewLink {
   font-size: var(--type-small);
   color: var(--color-brand-purple-light);
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
+  text-decoration: none;
+}
+
+.viewLink:hover {
+  text-decoration: underline;
 }

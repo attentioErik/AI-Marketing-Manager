@@ -55,19 +55,18 @@ export default async function DashboardPage() {
           <RunButton lastRunAt={lastRunAt} />
         </div>
         <p className={styles.sub}>
-          Trykk «Sett agentene i arbeid» for å kjøre alle 8 agentene parallelt.
-          Resultater vises i kortene nedenfor.
+          Trykk «Sett alle agenter i arbeid» for å kjøre alle parallelt, eller bruk «Kjør AI-Agent» på hvert kort.
         </p>
       </div>
 
-      <div>
+      <section className={styles.section}>
         <div className={styles.sectionTitle}>Agenter — {session.tenantName}</div>
         <AgentGrid
           agents={agentList}
           lastOutputs={lastOutputs}
           lastRuns={lastRuns}
         />
-      </div>
+      </section>
     </div>
   )
 }

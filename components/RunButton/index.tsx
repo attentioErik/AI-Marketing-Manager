@@ -35,7 +35,7 @@ export default function RunButton({ lastRunAt }: { lastRunAt?: string | null }) 
     <div className={styles.wrap}>
       <button className={styles.btn} onClick={handleRun} disabled={loading}>
         {loading ? <span className={styles.spinner} /> : '⚡'}
-        {loading ? 'Agentene jobber…' : 'Sett agentene i arbeid'}
+        {loading ? 'Agentene jobber…' : 'Sett alle agenter i arbeid'}
       </button>
 
       {lastRunAt && !results && (
