@@ -40,7 +40,7 @@ export async function saveOutput(data: {
 export async function getOutputsForAgent(
   agentId: string,
   tenantId: string,
-  limit = 10,
+  limit = 20,
   offset = 0
 ): Promise<{ outputs: AgentOutput[]; total: number }> {
   const [outputs, countResult] = await Promise.all([

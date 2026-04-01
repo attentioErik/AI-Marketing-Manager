@@ -47,9 +47,14 @@ export async function runAgent(agent: Agent, tenant: Tenant): Promise<RunResult>
     const outputTokens  = message.usage.output_tokens
     const rawContent    = message.content[0].type === 'text' ? message.content[0].text : ''
 
-    // Detect content type from visuell-kreator (JSON output)
+    // Detect content type and generate visual assets
     const contentType = agent.slug === 'visuell-kreator' ? detectContentType(rawContent) : 'markdown'
-    const assets      = contentType !== 'markdown' ? await generateVisualAssets(rawContent, contentType) : undefined
+    let assets: object | undefined
+    if (contentType !== 'markdown') {
+      assets = await generateVisualAssets(rawContent, contentType)
+    } else if (agent.slug === 'innholdsskaper' && process.env.OPENAI_API_KEY) {
+      assets = await generateBlogImage(rawContent)
+    }
 
     const output = await saveOutput({
       runId:       run.id,
@@ -223,4 +228,32 @@ async function generateVisualAssets(content: string, contentType: string): Promi
   }
 
   return parsed
+}
+
+async function generateBlogImage(content: string): Promise<object | undefined> {
+  try {
+    const titleMatch = content.match(/^#{1,2}\s+(.+)$/m)
+    const title = titleMatch?.[1]?.replace(/[*_`]/g, '').trim() ?? 'AI og digital markedsføring'
+
+    const prompt = `Professional blog header image for an article titled: "${title}".
+Dark digital agency aesthetic: near-black background (#08080c), purple (#7752e9) glowing accents, teal (#00d4c8) highlights.
+Abstract tech visualization, glassmorphism elements, bokeh lighting.
+Wide landscape format, high quality, no text overlays.`
+
+    const openai = getOpenAI()
+    const response = await openai.images.generate({
+      model:   'dall-e-3',
+      prompt,
+      size:    '1792x1024',
+      quality: 'standard',
+      n:       1,
+    })
+
+    const url = response.data?.[0]?.url
+    if (!url) return undefined
+    return { blog_image_url: url, blog_image_alt: title }
+  } catch (e) {
+    console.error('[innholdsskaper] Bloggbilde-generering feilet:', e)
+    return undefined
+  }
 }
