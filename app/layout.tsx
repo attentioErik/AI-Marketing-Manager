@@ -19,9 +19,14 @@ export const metadata: Metadata = {
   description: 'AI-drevet marketing team for Attentio AS',
 }
 
+const themeScript = `(function(){try{var t=localStorage.getItem('theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})()`
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="nb" className={`${bricolage.variable} ${dmMono.variable}`}>
+    <html lang="nb" className={`${bricolage.variable} ${dmMono.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body>{children}</body>
     </html>
   )

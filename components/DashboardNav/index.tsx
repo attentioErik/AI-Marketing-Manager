@@ -2,11 +2,33 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import ThemeToggle from '@/components/ThemeToggle'
 import styles from './DashboardNav.module.css'
 
-const navLinks = [
-  { href: '/dashboard',  label: 'Dashboard',  icon: '⬛' },
-  { href: '/settings',   label: 'Innstillinger', icon: '⚙' },
+const mainLinks = [
+  { href: '/dashboard', label: 'Dashboard', icon: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+      <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+    </svg>
+  )},
+  { href: '/settings', label: 'Innstillinger', icon: (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+  )},
+]
+
+const agents = [
+  { slug: 'produkt-og-strategi',  label: 'Produkt & Strategi' },
+  { slug: 'seo-spesialist',        label: 'SEO-spesialist' },
+  { slug: 'innholdsskaper',         label: 'Innholdsskaper' },
+  { slug: 'epost-og-lead',          label: 'E-post & Lead' },
+  { slug: 'cro-spesialist',         label: 'CRO-spesialist' },
+  { slug: 'vekst-og-lansering',     label: 'Vekst & Lansering' },
+  { slug: 'revenue-og-salg',        label: 'Revenue & Salg' },
+  { slug: 'visuell-kreator',        label: 'Visuell Kreator' },
 ]
 
 export default function DashboardNav({ tenantName }: { tenantName: string }) {
@@ -20,11 +42,16 @@ export default function DashboardNav({ tenantName }: { tenantName: string }) {
 
   return (
     <nav className={styles.nav}>
-      <div className={styles.logo}>attentio</div>
-      <div className={styles.logoSub}>{tenantName}</div>
+      <div className={styles.header}>
+        <div className={styles.logoWrap}>
+          <span className={styles.logo}>attentio</span>
+          <ThemeToggle />
+        </div>
+        <div className={styles.tenant}>{tenantName}</div>
+      </div>
 
       <div className={styles.links}>
-        {navLinks.map(({ href, label, icon }) => (
+        {mainLinks.map(({ href, label, icon }) => (
           <Link
             key={href}
             href={href}
@@ -35,28 +62,15 @@ export default function DashboardNav({ tenantName }: { tenantName: string }) {
           </Link>
         ))}
 
-        <div className={styles.divider} />
+        <div className={styles.groupLabel}>Agenter</div>
 
-        <div className={styles.logoSub} style={{ padding: '0 0.625rem', marginBottom: '0.5rem' }}>
-          Agenter
-        </div>
-
-        {[
-          { slug: 'produkt-og-strategi',  label: 'Produkt & Strategi' },
-          { slug: 'seo-spesialist',        label: 'SEO-spesialist' },
-          { slug: 'innholdsskaper',         label: 'Innholdsskaper' },
-          { slug: 'epost-og-lead',          label: 'E-post & Lead' },
-          { slug: 'cro-spesialist',         label: 'CRO-spesialist' },
-          { slug: 'vekst-og-lansering',     label: 'Vekst & Lansering' },
-          { slug: 'revenue-og-salg',        label: 'Revenue & Salg' },
-          { slug: 'visuell-kreator',        label: 'Visuell Kreator' },
-        ].map(({ slug, label }) => (
+        {agents.map(({ slug, label }) => (
           <Link
             key={slug}
             href={`/agents/${slug}`}
-            className={`${styles.link} ${pathname === `/agents/${slug}` ? styles.active : ''}`}
+            className={`${styles.link} ${styles.agentLink} ${pathname === `/agents/${slug}` ? styles.active : ''}`}
           >
-            <span className={styles.icon}>→</span>
+            <span className={styles.agentDot} />
             {label}
           </Link>
         ))}
@@ -65,7 +79,11 @@ export default function DashboardNav({ tenantName }: { tenantName: string }) {
       <div className={styles.bottom}>
         <div className={styles.divider} />
         <button className={styles.logoutBtn} onClick={handleLogout}>
-          <span className={styles.icon}>↩</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
           Logg ut
         </button>
       </div>

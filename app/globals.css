@@ -1,6 +1,6 @@
 /* ────────────────────────────────────────────
    ATTENTIO MARKETING DASHBOARD — DESIGN SYSTEM
-   Tokens inherited from attentio-v2
+   Dark mode default · Light mode via [data-theme="light"]
 ──────────────────────────────────────────── */
 
 *, *::before, *::after {
@@ -9,30 +9,23 @@
   padding: 0;
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
 
-/* ── Design Tokens ──────────────────────── */
+html[data-theme="light"] {
+  color-scheme: light;
+}
+
+/* ── Brand tokens (theme-invariant) ─────── */
 :root {
-  --color-brand-purple:       #7752e9;
-  --color-brand-purple-light: #9b7ef5;
-  --color-brand-purple-dim:   rgba(119, 82, 233, 0.12);
-  --color-brand-purple-glow:  rgba(119, 82, 233, 0.25);
-  --color-brand-teal:         #00d4c8;
-  --color-brand-teal-dim:     rgba(0, 212, 200, 0.1);
-
-  --color-ui-bg:       #08080c;
-  --color-ui-bg-2:     #0e0e16;
-  --color-ui-bg-3:     #141420;
-  --color-ui-surface:  #1a1a2a;
-  --color-ui-text:     #f0eefa;
-  --color-ui-text-2:   rgba(240, 238, 250, 0.55);
-  --color-ui-text-3:   rgba(240, 238, 250, 0.28);
-  --color-ui-border:   rgba(255, 255, 255, 0.07);
-  --color-ui-border-2: rgba(119, 82, 233, 0.18);
-
-  --color-glass-bg:     rgba(20, 20, 32, 0.6);
-  --color-glass-border: rgba(119, 82, 233, 0.15);
-  --color-card-hover:   rgba(119, 82, 233, 0.06);
+  --color-brand-purple:        #7752e9;
+  --color-brand-purple-light:  #9b7ef5;
+  --color-brand-purple-dim:    rgba(119, 82, 233, 0.12);
+  --color-brand-purple-glow:   rgba(119, 82, 233, 0.3);
+  --color-brand-teal:          #00d4c8;
+  --color-brand-teal-dim:      rgba(0, 212, 200, 0.1);
 
   --color-success:     #22c55e;
   --color-success-dim: rgba(34, 197, 94, 0.12);
@@ -61,9 +54,53 @@ html { scroll-behavior: smooth; }
   --radius-card-md: 1rem;
   --radius-card-sm: 0.75rem;
 
-  --border-1:   0.0625rem;
-
+  --border-1: 0.0625rem;
   --sidebar-w: 14rem;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-std: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Dark mode (default) ────────────────── */
+:root {
+  --color-ui-bg:       #07070d;
+  --color-ui-bg-2:     #0d0d18;
+  --color-ui-bg-3:     #131321;
+  --color-ui-surface:  #18182a;
+  --color-ui-text:     #eeeaf8;
+  --color-ui-text-2:   rgba(238, 234, 248, 0.58);
+  --color-ui-text-3:   rgba(238, 234, 248, 0.3);
+  --color-ui-border:   rgba(255, 255, 255, 0.065);
+  --color-ui-border-2: rgba(119, 82, 233, 0.22);
+
+  --color-glass-bg:     rgba(18, 18, 30, 0.72);
+  --color-glass-border: rgba(119, 82, 233, 0.16);
+  --color-card-hover:   rgba(119, 82, 233, 0.07);
+
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.4), 0 0 0 var(--border-1) var(--color-ui-border);
+  --shadow-elevated: 0 4px 16px rgba(0,0,0,0.5), 0 0 0 var(--border-1) var(--color-ui-border);
+}
+
+/* ── Light mode ─────────────────────────── */
+[data-theme="light"] {
+  --color-ui-bg:       #f6f4ff;
+  --color-ui-bg-2:     #ffffff;
+  --color-ui-bg-3:     #ede9fb;
+  --color-ui-surface:  #ffffff;
+  --color-ui-text:     #18152b;
+  --color-ui-text-2:   rgba(24, 21, 43, 0.62);
+  --color-ui-text-3:   rgba(24, 21, 43, 0.38);
+  --color-ui-border:   rgba(119, 82, 233, 0.1);
+  --color-ui-border-2: rgba(119, 82, 233, 0.22);
+
+  --color-glass-bg:     rgba(255, 255, 255, 0.85);
+  --color-glass-border: rgba(119, 82, 233, 0.15);
+  --color-card-hover:   rgba(119, 82, 233, 0.05);
+
+  --shadow-card: 0 1px 4px rgba(119,82,233,0.08), 0 0 0 var(--border-1) var(--color-ui-border);
+  --shadow-elevated: 0 4px 20px rgba(119,82,233,0.1), 0 0 0 var(--border-1) var(--color-ui-border-2);
+
+  --color-brand-purple-glow: rgba(119, 82, 233, 0.2);
 }
 
 /* ── Base ───────────────────────────────── */
@@ -75,11 +112,12 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s var(--ease-std), color 0.2s var(--ease-std);
 }
 
 a { color: inherit; text-decoration: none; }
 
-h1 { font-size: var(--type-h1); font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+h1 { font-size: var(--type-h1); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
 h2 { font-size: var(--type-h2); font-weight: 700; letter-spacing: -0.025em; line-height: 1.1; }
 h3 { font-size: 1.125rem; font-weight: 600; }
 
@@ -139,7 +177,8 @@ h3 { font-size: 1.125rem; font-weight: 600; }
 .markdown th { background: var(--color-ui-surface); color: var(--color-brand-purple-light); text-align: left; padding: 0.5rem 0.75rem; border: var(--border-1) solid var(--color-ui-border); }
 .markdown td { padding: 0.5rem 0.75rem; border: var(--border-1) solid var(--color-ui-border); color: var(--color-ui-text-2); }
 .markdown hr { border: none; border-top: var(--border-1) solid var(--color-ui-border); margin: 1.5rem 0; }
-.markdown blockquote { border-left: 3px solid var(--color-brand-purple); padding-left: 1rem; color: var(--color-ui-text-2); margin: 1rem 0; }
+.markdown blockquote { border-left: 3px solid var(--color-brand-purple); padding-left: 1rem; color: var(--color-ui-text-2); margin: 1rem 0; font-style: italic; }
+.markdown a { color: var(--color-brand-purple-light); text-decoration: underline; text-underline-offset: 2px; }
 
 /* ── Keyframes ──────────────────────────── */
 @keyframes spin {
@@ -150,7 +189,7 @@ h3 { font-size: 1.125rem; font-weight: 600; }
   50%       { opacity: 0.4; transform: scale(0.7); }
 }
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(1rem); }
+  from { opacity: 0; transform: translateY(0.75rem); }
   to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes shimmer {
