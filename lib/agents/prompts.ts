@@ -8,6 +8,38 @@ export function buildPrompt(agent: Agent, tenant: Tenant): {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
   })
 
+  // visuell-kreator must output pure JSON — different system suffix
+  if (agent.slug === 'visuell-kreator') {
+    const systemPrompt = `${agent.systemPrompt}
+
+---
+
+## Autonomt kjøremodus
+
+Du kjøres i dag (${today}) som en del av ${tenant.name}s automatiserte marketing-team.
+
+**Kritiske regler:**
+- Svar KUN med én enkelt \`\`\`json ... \`\`\` kodeblokk. Ingen tekst utenfor blokken.
+- Ikke legg til overskrifter, kommentarer, forklaringer eller noe annet.
+- Bildeprompts skal alltid være på engelsk.
+- JSON-strukturen MÅ inneholde et "slides"-array med minst 5 elementer.`
+
+    const userMessage = `${agent.schedulePrompt ?? 'Produser ukentlig karuselllinnlegg.'}
+
+---
+
+## Bedriftskontekst
+
+${tenant.productMarketingContext}
+
+---
+
+Output: kun én \`\`\`json\`\`\` kodeblokk, ingenting annet.`
+
+    return { systemPrompt, userMessage }
+  }
+
+  // All other agents
   const systemPrompt = `${agent.systemPrompt}
 
 ---

@@ -177,16 +177,27 @@ interface CarouselAssets {
 }
 
 async function generateVisualAssets(content: string, contentType: string): Promise<object | undefined> {
+  let parsed: { slides?: SlideData[] } | undefined
   try {
-    const parsed = JSON.parse(extractJson(content))
+    parsed = JSON.parse(extractJson(content))
+  } catch (e) {
+    console.error('[visuell-kreator] JSON parse failed:', e, '\nRaw content:', content.slice(0, 500))
+    return undefined
+  }
 
-    if (contentType === 'carousel' && parsed?.slides && process.env.OPENAI_API_KEY) {
-      const openai = getOpenAI()
-      const slides: SlideData[] = parsed.slides
+  if (contentType === 'carousel' && parsed?.slides) {
+    if (!process.env.OPENAI_API_KEY) {
+      console.warn('[visuell-kreator] OPENAI_API_KEY ikke satt — returnerer JSON uten bilder')
+      return parsed
+    }
 
-      const generated = await Promise.allSettled(
-        slides.map(async (slide: SlideData) => {
-          if (!slide.image_prompt) return slide
+    const openai = getOpenAI()
+    const slides: SlideData[] = parsed.slides
+
+    const generated = await Promise.allSettled(
+      slides.map(async (slide: SlideData) => {
+        if (!slide.image_prompt) return slide
+        try {
           const response = await openai.images.generate({
             model:   'dall-e-3',
             prompt:  slide.image_prompt,
@@ -195,17 +206,21 @@ async function generateVisualAssets(content: string, contentType: string): Promi
             n:       1,
           })
           return { ...slide, url: response.data?.[0]?.url ?? undefined }
-        })
-      )
+        } catch (e) {
+          console.error(`[visuell-kreator] DALL-E feil for slide:`, slide.image_prompt?.slice(0, 80), e)
+          return slide
+        }
+      })
+    )
 
-      const assets: CarouselAssets = {
-        slides: generated.map((r, i) =>
-          r.status === 'fulfilled' ? r.value : slides[i]
-        ),
-      }
-      return assets
+    const assets: CarouselAssets = {
+      ...parsed,
+      slides: generated.map((r, i) =>
+        r.status === 'fulfilled' ? r.value : slides[i]
+      ),
     }
+    return assets
+  }
 
-    return parsed
-  } catch { return undefined }
+  return parsed
 }
