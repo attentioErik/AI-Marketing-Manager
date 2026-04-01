@@ -1,0 +1,16 @@
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main {
+  flex: 1;
+  margin-left: var(--sidebar-w);
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+@media (max-width: 48rem) {
+  .main { margin-left: 0; }
+}

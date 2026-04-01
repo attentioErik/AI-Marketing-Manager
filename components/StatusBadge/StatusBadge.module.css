@@ -1,0 +1,31 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: var(--type-small);
+  font-weight: 500;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-pill);
+}
+
+.dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.success { background: var(--color-success-dim); color: var(--color-success); }
+.success .dot { background: var(--color-success); }
+
+.error { background: var(--color-error-dim); color: var(--color-error); }
+.error .dot { background: var(--color-error); }
+
+.running { background: var(--color-brand-purple-dim); color: var(--color-brand-purple-light); }
+.running .dot { background: var(--color-brand-purple-light); animation: pulse-dot 1.2s infinite; }
+
+.pending { background: var(--color-warning-dim); color: var(--color-warning); }
+.pending .dot { background: var(--color-warning); }
+
+.never { background: var(--color-ui-surface); color: var(--color-ui-text-3); }
+.never .dot { background: var(--color-ui-text-3); }

@@ -1,0 +1,50 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-card-sm);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: var(--type-body);
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+
+.btn:hover:not(:disabled)  { opacity: 0.85; }
+.btn:active:not(:disabled) { transform: scale(0.98); }
+.btn:disabled              { opacity: 0.45; cursor: not-allowed; }
+
+/* Variants */
+.primary {
+  background: var(--color-brand-purple);
+  color: #fff;
+  border: none;
+  padding: 0.625rem 1.25rem;
+}
+
+.outline {
+  background: transparent;
+  color: var(--color-brand-purple-light);
+  border: var(--border-1) solid var(--color-brand-purple);
+  padding: 0.625rem 1.25rem;
+}
+
+.ghost {
+  background: transparent;
+  color: var(--color-ui-text-2);
+  border: var(--border-1) solid var(--color-ui-border);
+  padding: 0.5rem 1rem;
+}
+
+.danger {
+  background: var(--color-error);
+  color: #fff;
+  border: none;
+  padding: 0.625rem 1.25rem;
+}
+
+/* Sizes */
+.sm { font-size: var(--type-small); padding: 0.375rem 0.75rem; }
+.lg { font-size: 1rem; padding: 0.875rem 1.75rem; }

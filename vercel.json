@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "app/api/agents/run/route.ts": {
+      "maxDuration": 300
+    }
+  }
+}

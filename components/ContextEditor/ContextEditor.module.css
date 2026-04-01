@@ -1,0 +1,27 @@
+.wrap { display: flex; flex-direction: column; gap: 1rem; }
+
+.textarea {
+  background: var(--color-ui-bg-2);
+  border: var(--border-1) solid var(--color-ui-border);
+  border-radius: var(--radius-card-md);
+  color: var(--color-ui-text);
+  font-family: var(--font-mono);
+  font-size: var(--type-small);
+  line-height: 1.7;
+  padding: 1rem 1.25rem;
+  resize: vertical;
+  min-height: 28rem;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.textarea:focus { border-color: var(--color-brand-purple); }
+
+.actions { display: flex; align-items: center; gap: 0.75rem; }
+
+.saved {
+  font-size: var(--type-small);
+  color: var(--color-success);
+  animation: fade-up 0.3s ease;
+}

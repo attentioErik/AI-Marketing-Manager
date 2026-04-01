@@ -1,0 +1,25 @@
+.page { display: flex; flex-direction: column; gap: var(--gap-48); }
+
+.header { display: flex; flex-direction: column; gap: var(--gap-16); }
+
+.topRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.title { margin: 0; }
+.title em { font-style: italic; color: var(--color-brand-purple-light); }
+
+.sub { color: var(--color-ui-text-2); max-width: 40rem; }
+
+.sectionTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-ui-text-3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: calc(var(--gap-24) * -1 + var(--gap-12));
+}
